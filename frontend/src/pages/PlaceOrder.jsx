@@ -29,32 +29,32 @@ const PlaceOrder = () => {
     setFormData(data => ({ ...data, [name]: value }))
   }
 
-  const initPay = (order) => {
-    const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount,
-      currency: order.currency,
-      name: 'Order Payment',
-      description: 'Order Payment',
-      order_id: order.id,
-      receipt: order.receipt,
-      handler: async (response) => {
-        console.log(response)
-        try {
-          const response = await axios.post(backendUrl + '/api.order/verifyRazorpay', response, { headers: { token } })
-          if (data.success) {
-            navigate('/orders')
-            setCartItems({})
-          }
-        } catch (error) {
-          console.log(error)
-          toast.error(error)
-        }
-      }
-    }
-    const rzp = new window.Razorpay(options)
-    rzp.open()
-  }
+  // const initPay = (order) => {
+  //   const options = {
+  //     key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+  //     amount: order.amount,
+  //     currency: order.currency,
+  //     name: 'Order Payment',
+  //     description: 'Order Payment',
+  //     order_id: order.id,
+  //     receipt: order.receipt,
+  //     handler: async (response) => {
+  //       console.log(response)
+  //       try {
+  //         const response = await axios.post(backendUrl + '/api.order/verifyRazorpay', response, { headers: { token } })
+  //         if (data.success) {
+  //           navigate('/orders')
+  //           setCartItems({})
+  //         }
+  //       } catch (error) {
+  //         console.log(error)
+  //         toast.error(error)
+  //       }
+  //     }
+  //   }
+  //   const rzp = new window.Razorpay(options)
+  //   rzp.open()
+  // }
 
   const onSubmitHandler = async (event) => {
     event.preventDefault()
@@ -92,22 +92,22 @@ const PlaceOrder = () => {
           }
           break;
 
-        case 'stripe':
-          const responseStripe = await axios.post(backendUrl + '/api/order/stripe', orderData, { headers: { token } })
-          if (responseStripe.data.success) {
-            const { session_url } = responseStripe.data
-            window.location.replace(session_url)
-          } else {
-            toast.error(responseStripe.data.message)
-          }
-          break;
+        // case 'stripe':
+        //   const responseStripe = await axios.post(backendUrl + '/api/order/stripe', orderData, { headers: { token } })
+        //   if (responseStripe.data.success) {
+        //     const { session_url } = responseStripe.data
+        //     window.location.replace(session_url)
+        //   } else {
+        //     toast.error(responseStripe.data.message)
+        //   }
+        //   break;
 
-        case 'razorpay':
-          const responseRazorpay = await axios.post(backendUrl + '/api/order/razorpay', orderData, { headers: { token } })
-          if (responseRazorpay.data.success) {
-            initPay(responseRazorpay.data.order)
-          }
-          break;
+        // case 'razorpay':
+        //   const responseRazorpay = await axios.post(backendUrl + '/api/order/razorpay', orderData, { headers: { token } })
+        //   if (responseRazorpay.data.success) {
+        //     initPay(responseRazorpay.data.order)
+        //   }
+        //   break;
 
         default:
           break;
@@ -156,11 +156,11 @@ const PlaceOrder = () => {
           <Title text1={'PAYMENT'} text2={'METHOD'} />
           {/* ---------- Payment Method Selection ---------- */}
           <div className='flex gap-3 flex-col lg:flex-row'>
-            <div onClick={() => setMethod('stripe')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
+            <div onClick={() => toast("Stripe is not available currently!")} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
               <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'stripe' ? 'bg-green-400' : ''}`}></p>
               <img className='h-5 mx-4' src={assets.stripe_logo} alt="" />
             </div>
-            <div onClick={() => setMethod('razorpay')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
+            <div onClick={() => toast("Razorpay is not available currently!")} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
               <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'razorpay' ? 'bg-green-400' : ''}`}></p>
               <img className='h-5 mx-4' src={assets.razorpay_logo} alt="" />
             </div>
